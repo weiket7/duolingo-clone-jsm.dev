@@ -1,3 +1,27 @@
+## Set up
+
+`npx create-expo-app@latest ./` Choose SDK 54 because Expo Go in Play Store is 54
+`npm run reset-project`
+`npx expo start`
+Ensure same wi-fi, in Expo Go app, scan QR code or enter exp://192.168.68.58:8081
+If Failed to download remote update, `npx expo start --tunnel`
+index.tsx change something and see it reflect on phone
+
+
+https://expo.dev/expo-skills
+npx skills add expo/skills
+building-native-ui
+eas-update-insights
+expo-api-routes
+expo-cicd-workflows
+expo-deployment
+expo-dev-client
+expo-tailwind-setup
+native-data-fetching
+upgrading-expo
+
+---
+
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
