@@ -47,7 +47,8 @@ TextInput.displayName = "CSS(TextInput)";
 function XXTouchableHighlight(
   props: React.ComponentProps<typeof RNTouchableHighlight>
 ) {
-  const { underlayColor, ...style } = StyleSheet.flatten(props.style) || {};
+  const flat = (StyleSheet.flatten(props.style) || {}) as Record<string, unknown>;
+  const { underlayColor, ...style } = flat;
   return (
     <RNTouchableHighlight
       underlayColor={underlayColor as string | undefined}
