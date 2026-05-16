@@ -1,10 +1,13 @@
 import { Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { Text, View, Pressable } from "@/components/tw";
 import { images } from "@/constants/images";
 
 export default function OnboardingScreen() {
+  const router = useRouter();
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Logo header */}
@@ -70,7 +73,10 @@ export default function OnboardingScreen() {
 
       {/* Get Started button */}
       <View className="px-6 pb-8">
-        <Pressable className="bg-lingua-purple rounded-3xl flex-row items-center justify-center py-[17px]">
+        <Pressable
+          className="bg-lingua-purple rounded-3xl flex-row items-center justify-center py-[17px]"
+          onPress={() => router.push("/(auth)/sign-up")}
+        >
           <Text className="text-body-lg font-poppins-semibold text-white">
             Get Started
           </Text>
