@@ -1,5 +1,5 @@
 import { useAuth, useClerk, useUser } from "@clerk/expo";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "@/components/tw";
@@ -30,8 +30,16 @@ export default function Index() {
         <Text className="text-body-lg font-poppins text-text-secondary text-center">
           Welcome, {user?.primaryEmailAddress?.emailAddress}
         </Text>
-        <TouchableOpacity style={styles.button} onPress={() => signOut()}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/language-selection")}
+        >
           <Text className="text-body-lg font-poppins-semibold text-white text-center">
+            Choose Language
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.buttonOutline} onPress={() => signOut()}>
+          <Text className="text-body-lg font-poppins-semibold text-lingua-purple text-center">
             Sign Out
           </Text>
         </TouchableOpacity>
@@ -56,5 +64,16 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     paddingHorizontal: 28,
     paddingVertical: 14,
+    minWidth: 200,
+    alignItems: "center",
+  },
+  buttonOutline: {
+    borderWidth: 2,
+    borderColor: "#6C4EF5",
+    borderRadius: 24,
+    paddingHorizontal: 28,
+    paddingVertical: 14,
+    minWidth: 200,
+    alignItems: "center",
   },
 });

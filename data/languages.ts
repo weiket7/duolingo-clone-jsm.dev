@@ -41,4 +41,20 @@ export const languages: Language[] = [
     description: "Spoken across Brazil, Portugal, and Africa.",
     totalLearners: "11M+",
   },
+  {
+    id: "ko",
+    name: "Korean",
+    nativeName: "한국어",
+    flag: "🇰🇷",
+    description: "The language of K-pop, K-drama, and one of Asia's top economies.",
+    totalLearners: "9.3M+",
+  },
+  {
+    id: "zh",
+    name: "Chinese",
+    nativeName: "中文",
+    flag: "🇨🇳",
+    description: "The most spoken language in the world by native speakers.",
+    totalLearners: "7.4M+",
+  },
 ];
