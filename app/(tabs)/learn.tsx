@@ -1,4 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useState } from "react";
 import { Image, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -172,6 +173,7 @@ function LessonRow({
         isInProgress && styles.lessonRowInProgress,
         !isLast && styles.lessonRowBorder,
       ]}
+      onPress={() => router.push(`/lesson/${lesson.id}`)}
     >
       {/* Left: lesson info */}
       <View className="flex-1">
