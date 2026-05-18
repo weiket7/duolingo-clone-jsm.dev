@@ -7,8 +7,10 @@ import { Text, View, TextInput, ScrollView } from "@/components/tw";
 import { languages } from "@/data/languages";
 import { LanguageCode } from "@/types/learning";
 import { images } from "@/constants/images";
+import { useLanguageStore } from "@/store/languageStore";
 
 export default function LanguageSelection() {
+  const { setLanguage } = useLanguageStore();
   const [selectedId, setSelectedId] = useState<LanguageCode>("es");
   const [search, setSearch] = useState("");
 
@@ -99,7 +101,10 @@ export default function LanguageSelection() {
           <TouchableOpacity
             activeOpacity={0.85}
             style={styles.continueBtn}
-            onPress={() => router.back()}
+            onPress={() => {
+              setLanguage(selectedId);
+              router.replace("/");
+            }}
           >
             <Text className="text-body-lg font-poppins-bold text-white text-center">
               Start Learning
