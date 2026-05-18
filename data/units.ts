@@ -66,4 +66,92 @@ export const units: Unit[] = [
     icon: "🔢",
     lessonIds: ["ja-u2-l1", "ja-u2-l2"],
   },
+
+  // German
+  {
+    id: "de-unit-1",
+    languageId: "de",
+    title: "Greetings & Introductions",
+    description: "Learn how to say hello and introduce yourself in German.",
+    order: 1,
+    color: "#58CC02",
+    icon: "👋",
+    lessonIds: ["de-u1-l1", "de-u1-l2", "de-u1-l3"],
+  },
+  {
+    id: "de-unit-2",
+    languageId: "de",
+    title: "Numbers & Time",
+    description: "Count to 20 and tell the time in German.",
+    order: 2,
+    color: "#1CB0F6",
+    icon: "🔢",
+    lessonIds: ["de-u2-l1", "de-u2-l2"],
+  },
+
+  // Portuguese
+  {
+    id: "pt-unit-1",
+    languageId: "pt",
+    title: "Greetings & Introductions",
+    description: "Learn how to say hello and introduce yourself in Portuguese.",
+    order: 1,
+    color: "#58CC02",
+    icon: "👋",
+    lessonIds: ["pt-u1-l1", "pt-u1-l2", "pt-u1-l3"],
+  },
+  {
+    id: "pt-unit-2",
+    languageId: "pt",
+    title: "Food & Drinks",
+    description: "Order food and talk about what you like to eat.",
+    order: 2,
+    color: "#FF9600",
+    icon: "🍽️",
+    lessonIds: ["pt-u2-l1", "pt-u2-l2"],
+  },
+
+  // Korean
+  {
+    id: "ko-unit-1",
+    languageId: "ko",
+    title: "Greetings & Introductions",
+    description: "Learn how to say hello and introduce yourself in Korean.",
+    order: 1,
+    color: "#58CC02",
+    icon: "👋",
+    lessonIds: ["ko-u1-l1", "ko-u1-l2", "ko-u1-l3"],
+  },
+  {
+    id: "ko-unit-2",
+    languageId: "ko",
+    title: "Numbers & Counting",
+    description: "Learn native and Sino-Korean numbers.",
+    order: 2,
+    color: "#CE82FF",
+    icon: "🔢",
+    lessonIds: ["ko-u2-l1", "ko-u2-l2"],
+  },
+
+  // Chinese
+  {
+    id: "zh-unit-1",
+    languageId: "zh",
+    title: "Greetings & Introductions",
+    description: "Learn how to say hello and introduce yourself in Chinese.",
+    order: 1,
+    color: "#58CC02",
+    icon: "👋",
+    lessonIds: ["zh-u1-l1", "zh-u1-l2", "zh-u1-l3"],
+  },
+  {
+    id: "zh-unit-2",
+    languageId: "zh",
+    title: "Numbers & Counting",
+    description: "Learn to count and use numbers in Mandarin Chinese.",
+    order: 2,
+    color: "#FF4B4B",
+    icon: "🔢",
+    lessonIds: ["zh-u2-l1", "zh-u2-l2"],
+  },
 ];
