@@ -6,8 +6,8 @@ import {
   StyleSheet,
   TextInput as RNTextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
-import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "@/components/tw";
 
@@ -15,16 +15,23 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   email: string;
+  onVerify: (code: string) => Promise<void>;
 }
 
-export default function VerificationModal({ visible, onClose, email }: Props) {
-  const router = useRouter();
+export default function VerificationModal({
+  visible,
+  onClose,
+  email,
+  onVerify,
+}: Props) {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [error, setError] = useState("");
   const inputRefs = useRef<(RNTextInput | null)[]>([
     null, null, null, null, null, null,
   ]);
 
-  const handleChange = (text: string, index: number) => {
+  const handleChange = async (text: string, index: number) => {
     const digit = text.replace(/[^0-9]/g, "").slice(-1);
     const newCode = [...code];
     newCode[index] = digit;
@@ -35,10 +42,21 @@ export default function VerificationModal({ visible, onClose, email }: Props) {
     }
 
     if (index === 5 && digit) {
-      setTimeout(() => {
-        handleClose();
-        router.replace("/");
-      }, 150);
+      const fullCode = newCode.join("");
+      setIsVerifying(true);
+      setError("");
+      try {
+        await onVerify(fullCode);
+      } catch (err: unknown) {
+        const clerkErr = err as { errors?: { message: string }[] };
+        setError(
+          clerkErr.errors?.[0]?.message ?? "Invalid code. Please try again."
+        );
+        setCode(["", "", "", "", "", ""]);
+        setTimeout(() => inputRefs.current[0]?.focus(), 100);
+      } finally {
+        setIsVerifying(false);
+      }
     }
   };
 
@@ -53,6 +71,7 @@ export default function VerificationModal({ visible, onClose, email }: Props) {
 
   const handleClose = () => {
     setCode(["", "", "", "", "", ""]);
+    setError("");
     onClose();
   };
 
@@ -108,9 +127,22 @@ export default function VerificationModal({ visible, onClose, email }: Props) {
                 maxLength={1}
                 selectTextOnFocus
                 textContentType="oneTimeCode"
+                editable={!isVerifying}
               />
             ))}
           </View>
+
+          {/* Loading / error */}
+          {isVerifying && (
+            <View className="items-center mt-4">
+              <ActivityIndicator color="#6C4EF5" />
+            </View>
+          )}
+          {!!error && (
+            <Text className="text-body-sm font-poppins text-center mt-3" style={styles.errorText}>
+              {error}
+            </Text>
+          )}
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -155,5 +187,8 @@ const styles = StyleSheet.create({
   codeInputFilled: {
     borderColor: "#6C4EF5",
     backgroundColor: "#EFF0FF",
+  },
+  errorText: {
+    color: "#D93025",
   },
 });

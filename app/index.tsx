@@ -1,24 +1,57 @@
+import { useAuth, useClerk, useUser } from "@clerk/expo";
+import { Redirect } from "expo-router";
+import { ActivityIndicator, StyleSheet, TouchableOpacity } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Text, View } from "@/components/tw";
-import { Link } from "expo-router";
-import { StyleSheet } from "react-native";
 
 export default function Index() {
+  const { isSignedIn, isLoaded } = useAuth();
+  const { signOut } = useClerk();
+  const { user } = useUser();
+
+  if (!isLoaded) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" color="#6C4EF5" />
+      </View>
+    );
+  }
+
+  if (!isSignedIn) {
+    return <Redirect href="/onboarding" />;
+  }
+
   return (
-    <View className="flex-1 justify-center items-center bg-background gap-y-4">
-      <Text className="text-h1 font-poppins-bold text-lingua-purple text-center">
-        lingua
-      </Text>
-      <Link href="/onboarding" style={styles.link}>
-        <Text className="text-body-lg font-poppins-semibold text-white text-center">
-          Go to Onboarding
+    <SafeAreaView style={styles.safeArea}>
+      <View className="flex-1 justify-center items-center bg-background gap-y-6 px-6">
+        <Text className="text-h1 font-poppins-bold text-lingua-purple text-center">
+          lingua
         </Text>
-      </Link>
-    </View>
+        <Text className="text-body-lg font-poppins text-text-secondary text-center">
+          Welcome, {user?.primaryEmailAddress?.emailAddress}
+        </Text>
+        <TouchableOpacity style={styles.button} onPress={() => signOut()}>
+          <Text className="text-body-lg font-poppins-semibold text-white text-center">
+            Sign Out
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  link: {
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+  },
+  button: {
     backgroundColor: "#6C4EF5",
     borderRadius: 24,
     paddingHorizontal: 28,

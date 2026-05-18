@@ -1,11 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Image, StyleSheet, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
+import { useSignIn, useSSO } from "@clerk/expo";
+import { type Href } from "expo-router";
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 import { ScrollView, Text, TextInput, View } from "@/components/tw";
 import { images } from "@/constants/images";
 import VerificationModal from "@/components/VerificationModal";
+
+WebBrowser.maybeCompleteAuthSession();
 
 function SocialButton({
   icon,
@@ -28,8 +34,66 @@ function SocialButton({
 
 export default function SignInScreen() {
   const router = useRouter();
+  const { signIn, fetchStatus } = useSignIn();
+  const { startSSOFlow } = useSSO();
   const [email, setEmail] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
+  useEffect(() => {
+    WebBrowser.warmUpAsync();
+    return () => { WebBrowser.coolDownAsync(); };
+  }, []);
+
+  const handleSignIn = async () => {
+    if (!email) return;
+    setSubmitError("");
+    try {
+      const { error } = await signIn.emailCode.sendCode({ emailAddress: email });
+      if (error) {
+        setSubmitError(error.message);
+        return;
+      }
+      setShowModal(true);
+    } catch (err: unknown) {
+      const e = err as { errors?: { message: string }[]; message?: string };
+      setSubmitError(
+        e.errors?.[0]?.message ?? e.message ?? "Something went wrong. Please try again."
+      );
+    }
+  };
+
+  const handleVerify = async (code: string) => {
+    const { error } = await signIn.emailCode.verifyCode({ code });
+    if (error) throw error;
+    if (signIn.status === "complete") {
+      await signIn.finalize({
+        navigate: ({ session, decorateUrl }) => {
+          if (session?.currentTask) return;
+          router.replace(decorateUrl("/") as Href);
+        },
+      });
+    }
+  };
+
+  const handleSocialAuth = async (strategy: "oauth_google" | "oauth_facebook" | "oauth_apple") => {
+    setSubmitError("");
+    try {
+      const { createdSessionId, setActive } = await startSSOFlow({
+        strategy,
+        redirectUrl: Linking.createURL("/"),
+      });
+      if (createdSessionId && setActive) {
+        await setActive({ session: createdSessionId });
+        router.replace("/");
+      }
+    } catch (err: unknown) {
+      const e = err as { errors?: { message: string }[]; message?: string };
+      setSubmitError(
+        e.errors?.[0]?.message ?? e.message ?? "Social sign-in failed. Please try again."
+      );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -82,10 +146,22 @@ export default function SignInScreen() {
             />
           </View>
 
+          {/* Submit error */}
+          {!!submitError && (
+            <Text className="text-body-sm font-poppins" style={styles.errorText}>
+              {submitError}
+            </Text>
+          )}
+
           {/* Sign In button */}
           <TouchableOpacity
-            style={styles.primaryButton}
-            onPress={() => setShowModal(true)}
+            style={[
+              styles.primaryButton,
+              (!email || fetchStatus === "fetching") &&
+                styles.primaryButtonDisabled,
+            ]}
+            onPress={handleSignIn}
+            disabled={!email || fetchStatus === "fetching"}
           >
             <Text className="text-body-lg font-poppins-semibold text-white">
               Sign In
@@ -106,6 +182,7 @@ export default function SignInScreen() {
             <SocialButton
               icon={<AntDesign name="google" size={20} color="#4285F4" />}
               label="Continue with Google"
+              onPress={() => handleSocialAuth("oauth_google")}
             />
             <SocialButton
               icon={
@@ -114,10 +191,12 @@ export default function SignInScreen() {
                 </View>
               }
               label="Continue with Facebook"
+              onPress={() => handleSocialAuth("oauth_facebook")}
             />
             <SocialButton
               icon={<AntDesign name="apple" size={22} color="#000" />}
               label="Continue with Apple"
+              onPress={() => handleSocialAuth("oauth_apple")}
             />
           </View>
         </View>
@@ -139,6 +218,7 @@ export default function SignInScreen() {
         visible={showModal}
         onClose={() => setShowModal(false)}
         email={email}
+        onVerify={handleVerify}
       />
     </SafeAreaView>
   );
@@ -183,6 +263,9 @@ const styles = StyleSheet.create({
     paddingVertical: 17,
     marginTop: 4,
   },
+  primaryButtonDisabled: {
+    opacity: 0.5,
+  },
   socialButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -205,5 +288,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#1877F2",
     alignItems: "center",
     justifyContent: "center",
+  },
+  errorText: {
+    color: "#D93025",
   },
 });

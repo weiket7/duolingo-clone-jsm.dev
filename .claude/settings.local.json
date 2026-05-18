@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx expo *)",
+      "Bash(python3 -m json.tool)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\(d['version']\\)\")",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(k, v.get\\('version',''\\)\\) for k,v in d.get\\('packages',{}\\).items\\(\\) if 'clerk' in k]\")",
+      "Bash(npx tsc *)"
+    ]
+  }
+}
